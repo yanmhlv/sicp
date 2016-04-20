@@ -1,5 +1,3 @@
-Exersice from SICP book
+# Exercises from SICP book
 
-##### for mac os `brew install racket`
-
-##### for ubuntu `apt-get install racket`
+#### interpreter: Dr.Racket
