@@ -46,7 +46,7 @@
 (define (equal-rat? x y)
   (= (* (numer x) (denom y)) (* (numer y) (denom x))))
 
-(print-rat (make-rat 10 -20))
+;(print-rat (make-rat 10 -20))
 
 ; ex 2.2
 (define (make-point x y) (cons x y))
@@ -69,5 +69,22 @@
   (display (y-point p))
   (display ")"))
 
-(print-point (mindpoint-segment (make-segment (make-point -1 2) (make-point 3 -6))))
-(print-point (mindpoint-segment (make-segment (make-point 6.4 3) (make-point -10.7 4))))
+;(print-point (mindpoint-segment (make-segment (make-point -1 2) (make-point 3 -6))))
+;(print-point (mindpoint-segment (make-segment (make-point 6.4 3) (make-point -10.7 4))))
+
+; ex 2.3
+(define (make-rect a b) (cons a b))
+(define (rect-width r)
+  (abs (- (x-point (car r)) (x-point (cdr r)))))
+(define (rect-height r)
+  (abs (- (y-point (car r)) (y-point (cdr r)))))
+(define (rect-perimeter r)
+  (* 2 (+ (rect-width r) (rect-height r))))
+(define (rect-area r)
+  (* (rect-width r) (rect-height r)))
+
+(define a (make-point 0 0))
+(define b (make-point 4 5))
+(define r (make-rect a b))
+(rect-perimeter r)
+(rect-area r)
