@@ -88,3 +88,114 @@
 (define r (make-rect a b))
 (rect-perimeter r)
 (rect-area r)
+
+
+
+
+
+(define (cons x y)
+    (define (dispatch m)
+        (cond ((= m 0) x)
+            ((= m 1) y)
+            (else (error "Аргумент не 0 или 1 -- CONS" m))))
+    dispatch)
+
+(define (car z) (z 0))
+(define (cdr z) (z 1))
+
+
+; ex 2.4
+(define (cons x y)
+    (lambda (m) (m x y)))
+(define (car z)
+    (z (lambda (p q) p)))
+(define (cdr z)
+    (z (lambda (p q) q)))
+
+; ex 2.5
+(define (expt b n)
+    (define (internal-expt n result)
+        (cond ((= n 0) 1)
+            ((= n 1) result)
+            (else (internal-expt (- n 1) (* result b)))))
+    (internal-expt n b))
+(define (cons a b)
+    (* (expt 2 a) (expt 3 b)))
+(define (num-divs n d)
+  (define (iter x result)
+    (if (= 0 (remainder x d))
+        (iter (/ x d) (+ 1 result))
+        result))
+  (iter n 0))
+
+(define (car z)
+    (num-divs z 2))
+(define (cdr z)
+    (num-divs z 3))
+
+(define (add-interval x y)
+    (make-interval (+ (lower-bound x) (lower-bound y))
+        (+ (upper-bound x) (upper-bound y))))
+
+(define (mul-interval x y)
+    (let ((p1 (* (lower-bound x) (lower-bound y)))
+        (p2 (* (lower-bound x) (upper-bound y)))
+        (p3 (* (upper-bound x) (lower-bound y)))
+        (p4 (* (upper-bound x) (upper-bound y))))
+    (make-interval
+        (min p1 p2 p3 p4)
+        (max p1 p2 p3 p4))))
+
+(define (div-interval x y)
+    (mul-interval x
+        (make-interval (/ 1.0 (upper-bound y))
+            (/ 1.0 (lower-bound y)))))
+
+; 2.7
+(define (make-interval a b) (cons a b))
+(define (upper-bound x) (car x))
+(define (lower-bound x) (cdr x))
+
+; 2.8
+(define (sub-interval x y)
+    (make-interval (- (lower-bound x) (upper-bound y))
+        (- (upper-bound x) (lower-bound y))))
+
+; 2.10
+(define (spans-zero? y)
+    (and (<= (lower-bound y) 0) (<= (upper-bound y) 0)))
+
+(define (div-interval x y)
+    (if (spans-zero? y)
+        (error "Error: denom should not span 0")
+        (mul-interval x
+            (make-interval (/ 1.0 (upper-bound y))
+                (/ 1.0 (lower-bound y))))))
+
+
+(define (make-center-width c w)
+    (make-interval (- c w) (+ c w)))
+(define (center i)
+    (/ (+ (lower-bound i) (upper-bound i)) 2))
+(define (width i)
+    (/ (- (upper-bound i) (lower-bound i)) 2))
+
+; ex 2.12
+(define (make-center-percent c p)
+    (make-center-width c (* c (/ p 100.0))))
+(define (percent i)
+    (* 100.0 (/ (width i) (center i))))
+
+; 2.14
+(define (par1 r1 r2)
+    (div-interval (mul-interval r1 r2)
+        (add-interval r1 r2)))
+
+(define (par2 r1 r2)
+    (let ((one (make-interval 1 1)))
+        (div-interval one
+            (add-interval (div-interval one r1)
+                (div-interval one r2)))))
+
+(par1 (make-interval 1 2) (make-interval 2 3))
+(par2 (make-interval 1 2) (make-interval 2 3))
