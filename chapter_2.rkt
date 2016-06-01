@@ -199,3 +199,100 @@
 
 (par1 (make-interval 1 2) (make-interval 2 3))
 (par2 (make-interval 1 2) (make-interval 2 3))
+
+
+(cons 1
+      (cons 2
+            (cons 3
+                  (cons 4 '()))))
+(cadr (list 1 2 3 4))
+
+(define (list-ref items n)
+  (if (= n 0)
+      (car items)
+      (list-ref (cdr items) (- n 1))))
+(list-ref (list 1 2 3 4 5) 3)
+
+(define (length items)
+  (if (null? items)
+      0
+      (+ 1 (length (cdr items)))))
+(length (list 1 2 3 4))
+
+(define (length-iter a count)
+  (if (null? a)
+      count
+      (length-iter (cdr a) (+ 1 count))))
+(length-iter (list 1 2 3 4) 0)
+
+(define (append list1 list2)
+  (if (null? list1)
+      list2
+      (cons (car list1) (append (cdr list1) list2))))
+
+(append (list 1 2) (list 3 4 5 6))
+
+; ex 2.17
+(define (last-pair items)
+  (if (null? (cdr items))
+      (car items)
+      (last-pair (cdr items))))
+(last-pair (list 1 2 3 4 72))
+
+; ex 2.18
+(define (reverse items)
+  (if (null? items)
+      items
+      (append (reverse (cdr items)) (list (car items)))))
+(reverse (list 1 2 3 4 7 9))
+
+; ex 2.20
+(define (same-parity first . items)
+  (define (iter items answer)
+    (if (null? items)
+        answer
+        (iter (cdr items)
+              (if (= (remainder (car items) 2)
+                     (remainder first 2))
+                  (append answer (list (car items)))
+                  answer))))
+  (iter items (list first)))
+(same-parity 1 3 4 5 6 99)
+
+
+(define (map proc items)
+  (if (null? items)
+      '()
+      (cons (proc (car items))
+            (map proc (cdr items)))))
+(map (lambda (x) (+ x 10)) (list 1 2 3 4))
+
+; (define (scale-list items factor)
+;   (if (null? items)
+;       '()
+;       (cons (* (car items) factor)
+;             (scale-list (cdr items) factor))))
+; (scale-list (list 1 2 3 4 5) 10)
+(define (scale-list items factor)
+  (map (lambda (x) (* x factor)) items))
+(scale-list (list 1 2 3 4) 10)
+
+; ex 2.21
+(define (square x) (* x x))
+; (define (square-list items)
+;   (if (null? items)
+;       '()
+;       (cons (square (car items)) (square-list (cdr items)))))
+(define (square-list items)
+  (map square items))
+(square-list (list 1 2 3 4))
+
+; ex 2.23
+(define (for-each proc items)
+  (cond ((null? items) #t)
+        (else (proc (car items))
+              (for-each proc (cdr items)))))
+(for-each (lambda (x)
+            (display x)
+            (newline))
+          (list 1 2 3 4))
