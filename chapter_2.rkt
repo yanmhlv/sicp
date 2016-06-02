@@ -207,6 +207,7 @@
                   (cons 4 '()))))
 (cadr (list 1 2 3 4))
 
+
 (define (list-ref items n)
   (if (= n 0)
       (car items)
@@ -296,3 +297,101 @@
             (display x)
             (newline))
           (list 1 2 3 4))
+
+(define (count-leaves x)
+  (cond ((null? x) 0)
+        ((not (pair? x)) 1)
+        (else (+ (count-leaves (car x))
+                 (count-leaves (cdr x))))))
+(define x (cons (list 1 2) (list 3 4)))
+(length x)
+
+; ex 2.25
+(car (cdr (car (cddr (list 1 3 (list 5 7) 9)))))
+(car (car (list (list 7))))
+(car
+ (cdr
+  (car
+   (cdr
+    (car
+     (cdr
+      (car
+       (cdr
+        (car
+         (cdr
+          (car
+           (cdr
+            (list 1 (list 2 (list 3 (list 4 (list 5 (list 6 7))))))))))))))))))
+
+; ex 2.26
+(append (list 1 2 3) (list 4 5 6))
+(cons (list 1 2 3) (list 4 5 6))
+(list (list 1 2 3) (list 4 5 6))
+
+; ex 2.27
+(define (deep-reverse items)
+  (cond ((null? items) null)
+        ((pair? (car items))
+         (append (deep-reverse (cdr items))
+                 (list (deep-reverse (car items)))))
+        (else
+         (append (deep-reverse (cdr items))
+                 (list (car items))))))
+(deep-reverse (list (list 1 2) (list 3 4)))
+
+; ex 2.28
+(define (fringe tree)
+  (cond ((null? tree) null)
+        ((not (pair? tree)) (list tree))
+        (else (append (fringe (car tree)) (fringe (cdr tree))))))
+
+(define f (list (list 1 2) (list 3 4)))
+(fringe (list f f))
+
+; ex 2.29
+(define (make-mobile left right)
+  (list left right))
+(define (make-branch length structure)
+  (list length structure))
+
+(define (left-branch m)
+  (car m))
+(define (right-branch m)
+  (cadr m))
+
+(define (branch-length b)
+  (car b))
+(define (branch-structure b)
+  (cadr b))
+
+(define (branch-weight b)
+  (let ((struct (branch-structure b)))
+    (if (pair? struct)
+        (total-weight struct)
+        struct)))
+(define (total-weight m)
+  (+ (branch-weight (left-branch m))
+     (branch-weight (right-branch m))))
+
+(define (balanced? m)
+  (define (branch-balanced? b)
+    (if (pair? (branch-structure b))
+        (balanced? (branch-structure b))
+        true))
+  (define (torgue b)
+    (* (branch-length b) (branch-weight b)))
+  (let ((left (left-branch m))
+        (right (right-branch m)))
+    (and (branch-balanced? left)
+         (branch-balanced? right)
+         (= (torgue left) (torgue right)))))
+
+(define a (make-mobile (make-branch 2 3) (make-branch 2 3)))
+(define b (make-mobile (make-branch 2 3) (make-branch 4 5)))
+(total-weight a)
+(total-weight b)
+(balanced? a)
+(balanced? b)
+(define c (make-mobile (make-branch 5 a) (make-branch 3 b)))
+(total-weight c)
+(balanced? c)
