@@ -395,3 +395,40 @@
 (define c (make-mobile (make-branch 5 a) (make-branch 3 b)))
 (total-weight c)
 (balanced? c)
+
+
+(define (scale-tree tree factor)
+    (map (lambda (sub-tree)
+        (if (pair? sub-tree)
+            (scale-tree sub-tree factor)
+            (* sub-tree factor)))))
+
+; ex 2.30
+(define (square x) (* x x))
+(define (square-tree tree)
+    (map (lambda (sub-tree)
+        (if (pair? sub-tree)
+            (square-tree sub-tree)
+            (square sub-tree)))))
+
+(define (square-tree tree)
+    (cond ((null? tree) null)
+        ((not (pair? tree)) (square tree))
+        (else (cons (square-tree (car tree)) (square-tree (cdr tree))))))
+
+; ex 2.31
+(define (tree-map f tree)
+    (map (lambda (sub-tree)
+        (if (pair? sub-tree)
+            (tree-map sub-tree)
+            (f sub-tree)))))
+
+(define (square-tree tree)
+    (tree-map square tree))
+
+; ex 2.32
+(define (subsets s)
+    (if (null? s)
+        (list null)
+        (let ((rest (subsets (cdr s))))
+            (append rest (map (lambda (x) (cons (car s) x)) rest)))))
