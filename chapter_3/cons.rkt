@@ -1,0 +1,26 @@
+#lang racket
+
+(define (cons x y)
+  (define (car) x)
+  (define (cdr) y)
+  (define (set-car! new)
+    (begin (set! x new) new))
+  (define (set-cdr! new)
+    (begin (set! y new) new))
+  (define (dispatch m)
+    (cond
+      ((eq? m 'car) (car))
+      ((eq? m 'cdr) (cdr))
+      ((eq? m 'set-car!) set-car!)
+      ((eq? m 'set-cdr!) set-cdr!)
+      (else (error "неизвестная операция CONS" m))))
+  dispatch)
+
+(define (car pair)
+  (pair 'car))
+(define (cdr pair)
+  (pair 'cdr))
+(define (set-car! pair new)
+  ((pair 'set-car!) new))
+(define (set-cdr! pair new)
+  ((pair 'set-cdr!) new))
